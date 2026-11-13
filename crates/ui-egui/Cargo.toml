@@ -31,7 +31,7 @@ pdfcraft-platform = { workspace = true }
 egui = { workspace = true, features = ["bytemuck", "default_fonts", "monochrome_emoji_fonts"] }
 egui_extras = { workspace = true }
 # `glow` is always on: `eframe::App::on_exit` takes a GL context when that feature is enabled.
-eframe = { workspace = true, features = ["default_fonts", "wgpu", "glow", "accesskit", "persistence", "links", "clipboard"] }
+eframe = { workspace = true, features = ["default_fonts", "wgpu", "glow", "persistence", "links", "clipboard"] }
 serde = { workspace = true }
 serde_json = { workspace = true }
 log = { workspace = true }
@@ -53,6 +53,11 @@ unicode-bidi = "0.3"
 # Checks that an installed fallback font parses and has the glyphs, and reads the vertical metrics
 # that put fallback faces on the interface's baseline (#1676); the same skrifa egui uses.
 skrifa = "0.44"
+
+# Screen readers (AccessKit). eframe offers it on Android only with GameActivity, and the
+# Android app is a NativeActivity, so it is left out there.
+[target.'cfg(not(target_os = "android"))'.dependencies]
+eframe = { workspace = true, features = ["accesskit"] }
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 craft-update = { workspace = true }
