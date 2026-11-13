@@ -4,11 +4,19 @@
         <activity android:name=".PdfcraftActivity"
             android:exported="true"
             android:resizeableActivity="true"
+            android:launchMode="singleTask"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|keyboard|navigation|uiMode|density|smallestScreenSize">
             <meta-data android:name="android.app.lib_name" android:value="pdfcraft_android" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!-- Opens these files from the Files app ("Open with", and as the default app). -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.EDIT" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="application/pdf" />
             </intent-filter>
         </activity>
     </application>

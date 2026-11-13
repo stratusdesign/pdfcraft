@@ -36,6 +36,16 @@ impl eframe::App for App {
         self.app.on_exit(gl);
     }
     fn logic(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
+        // Documents ChromeOS handed over ("Open with", or PdfCraft as the default app).
+        let opened = self.files.borrow_mut().take_opened();
+        for o in opened {
+            match o {
+                Ok((path, _, _)) => {
+                    let _ = self.app.open_path(&path);
+                }
+                Err(e) => self.app.notify(e),
+            }
+        }
         let problems = self.files.borrow_mut().logic();
         if let Some(p) = problems.into_iter().last() {
             self.app.notify(p);
