@@ -12,7 +12,7 @@ use std::rc::Rc;
 use std::sync::mpsc::Sender;
 use std::sync::{Arc, Mutex};
 
-use egui::{Align2, Rect, Sense, Ui, pos2, vec2};
+use egui::{Align2, Sense, Ui, pos2, vec2};
 use rfd::android::{Kind, Request};
 
 use crate::files::{Files, Item};
