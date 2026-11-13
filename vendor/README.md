@@ -166,3 +166,15 @@ is built in memory.
 | #5178 | Read OpenType-wrapped CFF programs for embedded simple fonts. | `open_type_cff_simple_font` |
 | #5199 | Preserve gray under nonseparable Color blending in vello_cpu. | `nonseparable_gray` |
 | #5228 | Blend supported isolated DeviceCMYK groups in their ink space. | `raster::tests::isolated_cmyk_groups` |
+
+## rfd and arboard (Android)
+
+`vendor/rfd` is rfd 0.17.2 and `vendor/arboard` is arboard as published on crates.io, each with
+one addition for the Android app (`apps/pdfcraft-android`); every other platform is upstream's
+code unchanged.
+
+- `vendor/rfd/src/backend/android.rs` and `src/android.rs`: Android has no file dialog an app can
+  show by path, so every dialog is handed to the host the app registers
+  (`rfd::android::set_host`), PdfCraft's own folder browser, which answers with local paths.
+- `vendor/arboard/src/platform/android.rs`: no system clipboard is reachable, so every call
+  reports `ClipboardNotSupported` and PdfCraft falls back to egui's clipboard.

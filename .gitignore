@@ -10,3 +10,9 @@ plan/
 # A craft-fonts checkout used as the optional CRAFT_FONTS_DIR build input (CI and releases put it here).
 /craft-fonts
 .claude/
+
+# Android build output
+apps/pdfcraft-android/android/app/src/main/jniLibs/
+apps/pdfcraft-android/android/app/build/
+apps/pdfcraft-android/android/.gradle/
+apps/pdfcraft-android/android/build/

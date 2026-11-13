@@ -151,6 +151,11 @@ hayro-cmap = { path = "vendor/hayro-cmap" }
 hayro-postscript = { path = "vendor/hayro-postscript" }
 hayro-jbig2 = { path = "vendor/hayro-jbig2" }
 lopdf = { path = "vendor/lopdf" }
+# rfd 0.17.2 plus an Android backend that hands file dialogs to the Android app's own folder
+# browser (vendor/rfd/src/backend/android.rs); every other platform is upstream's.
+rfd = { path = "vendor/rfd" }
+# arboard 3.6 plus an Android stub (no system clipboard there: every call says so).
+arboard = { path = "vendor/arboard" }
 vello_common = { path = "vendor/vello_common" }
 vello_cpu = { path = "vendor/vello_cpu" }
 # The egui and winit crates below are pinned to immutable storytold git revisions (egui
