@@ -8,6 +8,7 @@
 #![deny(clippy::unwrap_used, clippy::expect_used, clippy::panic, clippy::unimplemented, clippy::todo, clippy::unreachable)]
 
 mod browser;
+mod clipboard;
 mod files;
 mod page;
 
@@ -23,10 +24,12 @@ struct App {
     browser: browser::Browser,
     pending: browser::Pending,
     files: Rc<RefCell<files::Files>>,
+    clip: clipboard::Bridge,
 }
 
 impl eframe::App for App {
     fn raw_input_hook(&mut self, ctx: &egui::Context, raw: &mut egui::RawInput) {
+        self.clip.input(raw);
         self.app.raw_input_hook(ctx, raw);
     }
     fn save(&mut self, storage: &mut dyn eframe::Storage) {
@@ -59,6 +62,7 @@ impl eframe::App for App {
     fn ui(&mut self, ui: &mut egui::Ui, frame: &mut eframe::Frame) {
         self.app.ui(ui, frame);
         self.browser.show(ui.ctx(), &self.pending, &self.files);
+        self.clip.output(ui.ctx());
     }
 }
 
@@ -86,7 +90,7 @@ fn android_main(android_app: AndroidApp) {
             if let Some(json) = cc.storage.and_then(|s| s.get_string("pdfcraft")) {
                 app.restore(&json);
             }
-            Ok(Box::new(App { app, browser: browser::Browser::default(), pending, files }))
+            Ok(Box::new(App { app, browser: browser::Browser::default(), pending, files, clip: clipboard::Bridge::default() }))
         }),
     );
     if let Err(e) = result {
