@@ -11,6 +11,7 @@ mod browser;
 mod clipboard;
 mod files;
 mod page;
+mod print;
 
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -87,6 +88,8 @@ fn android_main(android_app: AndroidApp) {
             browser::install(pending.clone(), cc.egui_ctx.clone());
             let mut app = PdfCraftApp::new();
             app.units = pdfcraft_ui_egui::units::Unit::system();
+            let dir = data.clone();
+            app.system_print = Some(Box::new(move |name: &str, pdf: &[u8]| print::print(dir.as_deref(), name, pdf)));
             if let Some(json) = cc.storage.and_then(|s| s.get_string("pdfcraft")) {
                 app.restore(&json);
             }

@@ -436,6 +436,9 @@ pub struct PdfCraftApp {
     /// Lists the Print dialog's printers in the background (the desktop app sets it; see
     /// [`PrinterSource`]).
     pub printer_source: Option<PrinterSource>,
+    /// Android: File › Print hands the document (named) to the system print dialog, which has
+    /// the printers, instead of opening PdfCraft's own Print dialog.
+    pub system_print: Option<Box<dyn Fn(&str, &[u8]) -> Result<(), String>>>,
     /// Where Properties… reads a printer's driver options: the spooler's unless a test stands in.
     pub options_source: Option<OptionsSource>,
     /// Where a printer's configured default paper comes from: DEVMODE / driver settings unless a test stands in.

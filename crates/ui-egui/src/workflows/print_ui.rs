@@ -181,9 +181,38 @@ impl Drop for WakeOnExit {
 }
 
 impl PdfCraftApp {
+    /// Android: the whole document, laid out as the Print dialog's defaults would, to the system
+    /// print dialog. Through `print_pdf`, so the document's print permissions still hold.
+    fn print_to_system(&mut self, id: pdfcraft_engine::DocId) {
+        // What's typed in a form field is part of what's printed (#166).
+        if !self.commit_form_typing() {
+            return;
+        }
+        if self.session.get(id).is_some_and(|d| d.allows_printing()) {
+            self.run_document_actions(id, pdfcraft_engine::js::DocumentScriptEvent::WillPrint);
+        }
+        let Some(doc) = self.session.get(id) else { return };
+        let labels: Vec<String> = doc.info.pages.iter().map(|p| p.label.clone()).collect();
+        let name = doc.name.clone();
+        let settings = match PrintDraft::default().settings(doc.info.pages.len(), &labels) {
+            Ok(s) => s,
+            Err(e) => return self.notify_tr(&e),
+        };
+        let bytes = match self.session.print_pdf(id, &settings) {
+            Ok(b) => b,
+            Err(e) => return self.notify_error(e),
+        };
+        if let Some(Err(e)) = self.system_print.as_ref().map(|print| print(&name, bytes.as_slice())) {
+            self.notify(format!("Couldn't print: {e}"));
+        }
+    }
+
     /// Open the Print dialog, preselecting the default printer and reading papers in the background.
     pub fn open_print(&mut self) {
-        let Some((i, _)) = self.active_ids() else { return };
+        let Some((i, id)) = self.active_ids() else { return };
+        if self.system_print.is_some() {
+            return self.print_to_system(id);
+        }
         let (printers, printers_loading) = match self.printer_source.clone() {
             // The list from the last time the dialog opened, until the fresh one arrives.
             #[cfg(not(target_arch = "wasm32"))]
